@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useDraw } from '../../hooks/useDraw';
 import { socket } from '../../services/socket';
-import { DRAW_LINE, CLEAR_BOARD, JOIN_ROOM, UPDATE_USERS, CURSOR_MOVE, CURSOR_LEAVE } from '../../constants/events';
+import { DRAW_LINE, CLEAR_BOARD, JOIN_ROOM, UPDATE_USERS, CURSOR_MOVE, CURSOR_LEAVE, CANVAS_STATE, LEAVE_ROOM } from '../../constants/events';
 import UserCursor from './UserCursor';
 
 const Whiteboard = () => {
@@ -12,22 +12,14 @@ const Whiteboard = () => {
   const [color, setColor] = useState('#000000');
   const [isErasing, setIsErasing] = useState(false);
   const [users, setUsers] = useState([]);
-  const [cursors, setCursors] = useState({}); // { userId: { x, y, userName, color } }
+  const [cursors, setCursors] = useState({}); 
   const currentUserIdRef = useRef(socket.id);
-
-  // We'll use a ref for canvas size since we don't want re-renders on resize, just redraws if needed (though existing code forces re-render via state, let's keep it simple for now but fix the existing state usage if it was creating loops).
-  // Actually, the existing code used state for canvasSize. Let's keep it consistent but fix the useDraw dependency if needed.
-  // Wait, I see the previous code used state for canvasSize. I will keep it as state to match existing pattern for now, but I will add the user list state.
-
-  /* Re-declaring state as per original file but adding users */
-  /* const [canvasSize, setCanvasSize] = useState(...) - keeping original */
 
   const [canvasDimensions, setCanvasDimensions] = useState({
     width: window.innerWidth,
     height: window.innerHeight
   });
 
-  // Generate consistent color for each user based on their ID
   const getUserColor = (userId) => {
     const colors = [
       '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8',
@@ -62,7 +54,7 @@ const Whiteboard = () => {
     ctx.restore();
   }
 
-  const createLine = useCallback(({ ctx, currentPoint, prevPoint }) => {
+  const drawLocal = useCallback(({ ctx, currentPoint, prevPoint }) => {
     const lineOptions = {
       prevPoint,
       currentPoint,
@@ -71,9 +63,10 @@ const Whiteboard = () => {
       width: 5,
       isErasing
     };
-
     drawLine(lineOptions);
+  }, [color, isErasing]);
 
+  const emitLine = useCallback(({ prevPoint, currentPoint }) => {
     socket.emit(DRAW_LINE, {
       prevPoint,
       currentPoint,
@@ -84,15 +77,19 @@ const Whiteboard = () => {
     });
   }, [color, isErasing, roomId]);
 
-  const { canvasRef, onMouseDown, undo, redo, clearCanvas } = useDraw(createLine);
+  const { canvasRef, onMouseDown, undo, redo, clearCanvas } = useDraw(drawLocal, emitLine);
 
   const handleClearBoard = () => {
     clearCanvas();
     socket.emit(CLEAR_BOARD, roomId);
   };
 
+  const handleLeaveRoom = () => {
+    socket.emit(LEAVE_ROOM, { roomId });
+    navigate('/');
+  };
+
   useEffect(() => {
-    // Update socket ID on connect
     const handleConnect = () => {
       currentUserIdRef.current = socket.id;
       console.log('[Cursor] Socket connected with ID:', socket.id);
@@ -139,7 +136,6 @@ const Whiteboard = () => {
     };
   }, [roomId, location.state, navigate]);
 
-  // Handle cursor movement
   useEffect(() => {
     const handleMouseMove = (e) => {
       const rect = canvasRef.current?.getBoundingClientRect();
@@ -155,13 +151,11 @@ const Whiteboard = () => {
 
       console.log('[Cursor] Emitting cursor_move:', cursorData);
 
-      // Emit cursor position to other users with absolute viewport coordinates
       socket.emit(CURSOR_MOVE, cursorData);
     };
 
     const handleMouseLeave = () => {
       console.log('[Cursor] Emitting cursor_leave for user:', currentUserIdRef.current);
-      // Notify others that cursor left the canvas
       socket.emit(CURSOR_LEAVE, {
         userId: currentUserIdRef.current,
         room: roomId
@@ -182,12 +176,10 @@ const Whiteboard = () => {
     };
   }, [roomId, location.state, canvasRef]);
 
-  // Listen for other users' cursor movements
   useEffect(() => {
     const handleCursorMove = ({ x, y, userId, userName }) => {
       console.log('[Cursor] Received cursor_move:', { x, y, userId, userName, myId: currentUserIdRef.current });
 
-      // Don't show own cursor
       if (userId === currentUserIdRef.current) {
         console.log('[Cursor] Ignoring own cursor');
         return;
@@ -237,12 +229,21 @@ const Whiteboard = () => {
       clearCanvas();
     };
 
+    const handleStateEvent = (strokes) => {
+      if (!ctx) return;
+      strokes.forEach(stroke => {
+        drawLine({ ...stroke, ctx });
+      });
+    };
+
     socket.on(DRAW_LINE, handleDrawEvent);
     socket.on(CLEAR_BOARD, handleClearEvent);
+    socket.on(CANVAS_STATE, handleStateEvent);
 
     return () => {
       socket.off(DRAW_LINE);
       socket.off(CLEAR_BOARD);
+      socket.off(CANVAS_STATE);
     };
   }, [canvasRef, clearCanvas]);
 
@@ -307,7 +308,15 @@ const Whiteboard = () => {
 
       {/* User List Overlay */}
       <div className="absolute top-4 right-4 bg-white p-4 rounded-lg shadow-md border border-gray-200 max-w-xs">
-        <h3 className="font-bold text-gray-700 mb-2 border-b pb-1">Active Users ({users.length})</h3>
+        <div className="flex justify-between items-center mb-2 border-b pb-1">
+          <h3 className="font-bold text-gray-700">Active Users ({users.length})</h3>
+          <button
+            onClick={handleLeaveRoom}
+            className="text-xs bg-red-100 hover:bg-red-200 text-red-800 px-2 py-1 rounded transition"
+          >
+            Leave
+          </button>
+        </div>
         <ul className="space-y-1 max-h-40 overflow-y-auto">
           {users.map((user, index) => (
             <li key={index} className="text-sm text-gray-600 flex items-center gap-2">
@@ -332,7 +341,6 @@ const Whiteboard = () => {
         </button>
       </div>
 
-      {/* Render other users' cursors */}
       {Object.entries(cursors).map(([userId, cursor]) => (
         <UserCursor
           key={userId}

@@ -1,12 +1,22 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
+import { throttle } from 'lodash';
 
-export const useDraw = (onDraw) => {
+export const useDraw = (onDraw, onEmit) => {
   const canvasRef = useRef(null);
   const isDrawing = useRef(false);
   const prevPoint = useRef(null);
 
   const [history, setHistory] = useState([]);
+
   const [redoStack, setRedoStack] = useState([]);
+
+  const throttledEmit = useMemo(
+    () =>
+      throttle((data) => {
+        onEmit?.(data);
+      }, 20),
+    [onEmit]
+  );
 
   const onMouseDown = () => {
     isDrawing.current = true;
@@ -52,13 +62,15 @@ export const useDraw = (onDraw) => {
 
       if (!ctx || !currentPoint) return;
 
-      onDraw({ ctx, currentPoint, prevPoint: prevPoint.current });
+      const drawData = { ctx, currentPoint, prevPoint: prevPoint.current };
+      onDraw(drawData);
+      throttledEmit(drawData);
 
       prevPoint.current = currentPoint;
     };
 
     const mouseUpHandler = () => {
-      if (!isDrawing.current) return; 
+      if (!isDrawing.current) return;
 
       isDrawing.current = false;
       prevPoint.current = null;
@@ -67,7 +79,7 @@ export const useDraw = (onDraw) => {
         const dataUrl = canvasRef.current.toDataURL();
         console.log("Capturing state to history");
         setHistory((prev) => [...prev, dataUrl]);
-        setRedoStack([]); 
+        setRedoStack([]);
       }
     };
 
@@ -83,7 +95,7 @@ export const useDraw = (onDraw) => {
       }
       window.removeEventListener('mouseup', mouseUpHandler);
     };
-  }, [onDraw]);
+  }, [onDraw, throttledEmit]);
 
   const undo = () => {
     console.log("Undo called. History length:", history.length);

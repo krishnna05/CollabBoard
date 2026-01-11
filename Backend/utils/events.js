@@ -7,4 +7,6 @@ module.exports = {
   UPDATE_USERS: 'update_users',
   CURSOR_MOVE: 'cursor_move',
   CURSOR_LEAVE: 'cursor_leave',
+  CANVAS_STATE: 'canvas_state',
+  LEAVE_ROOM: 'leave_room',
 };

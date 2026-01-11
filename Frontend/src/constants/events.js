@@ -6,3 +6,5 @@ export const JOIN_ROOM = 'join_room';
 export const UPDATE_USERS = 'update_users';
 export const CURSOR_MOVE = 'cursor_move';
 export const CURSOR_LEAVE = 'cursor_leave';
+export const CANVAS_STATE = 'canvas_state';
+export const LEAVE_ROOM = 'leave_room';

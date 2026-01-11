@@ -7,26 +7,22 @@ export const useDraw = (onDraw, onEmit) => {
   const prevPoint = useRef(null);
 
   const [history, setHistory] = useState([]);
-
   const [redoStack, setRedoStack] = useState([]);
 
   const throttledEmit = useMemo(
-    () =>
-      throttle((data) => {
+    () => throttle((data) => {
         onEmit?.(data);
-      }, 20),
+    }, 10),
     [onEmit]
   );
 
-  const onMouseDown = () => {
+  const onMouseDown = (e) => {
+    e.preventDefault(); 
     isDrawing.current = true;
   };
 
   const redo = () => {
-    if (redoStack.length === 0) {
-      console.log("Redo stack empty");
-      return;
-    }
+    if (redoStack.length === 0) return;
 
     const snapshot = redoStack[redoStack.length - 1];
     setRedoStack((prev) => prev.slice(0, -1));
@@ -39,7 +35,6 @@ export const useDraw = (onDraw, onEmit) => {
       ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
       ctx.drawImage(img, 0, 0);
     };
-    console.log("Redo performed. History size:", history.length + 1);
   };
 
   useEffect(() => {
@@ -77,7 +72,6 @@ export const useDraw = (onDraw, onEmit) => {
 
       if (canvasRef.current) {
         const dataUrl = canvasRef.current.toDataURL();
-        console.log("Capturing state to history");
         setHistory((prev) => [...prev, dataUrl]);
         setRedoStack([]);
       }
@@ -98,7 +92,6 @@ export const useDraw = (onDraw, onEmit) => {
   }, [onDraw, throttledEmit]);
 
   const undo = () => {
-    console.log("Undo called. History length:", history.length);
     if (history.length === 0) return;
 
     const currentHistory = [...history];

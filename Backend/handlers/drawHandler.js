@@ -1,8 +1,10 @@
-const { DRAW_LINE, CLEAR_BOARD } = require('../utils/events');
+const { DRAW_LINE, CLEAR_BOARD, JOIN_ROOM } = require('../utils/events');
 
 module.exports = (io, socket) => {
-  socket.on(DRAW_LINE, ({ prevPoint, currentPoint, color, width, isErasing }) => {
-    socket.broadcast.emit(DRAW_LINE, {
+  /* socket.on(JOIN_ROOM) moved to roomHandler to track users */
+
+  socket.on(DRAW_LINE, ({ prevPoint, currentPoint, color, width, room, isErasing }) => {
+    socket.to(room).emit(DRAW_LINE, {
       prevPoint,
       currentPoint,
       color,
@@ -11,7 +13,7 @@ module.exports = (io, socket) => {
     });
   });
 
-  socket.on(CLEAR_BOARD, () => {
-    socket.broadcast.emit(CLEAR_BOARD);
+  socket.on(CLEAR_BOARD, (room) => {
+    socket.to(room).emit(CLEAR_BOARD);
   });
 };

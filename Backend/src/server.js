@@ -6,6 +6,8 @@ const cors = require('cors');
 
 const events = require('../utils/events');
 const registerDrawHandlers = require('../handlers/drawHandler');
+const registerRoomHandlers = require('../handlers/roomHandler');
+const registerCursorHandlers = require('../handlers/cursorHandler');
 
 const app = express();
 
@@ -27,6 +29,8 @@ app.get('/', (req, res) => {
 io.on(events.CONNECT, (socket) => {
   console.log(`Client connected: ${socket.id}`);
   registerDrawHandlers(io, socket);
+  registerRoomHandlers(io, socket);
+  registerCursorHandlers(io, socket);
 
   socket.on(events.DISCONNECT, () => {
     console.log(`Client disconnected: ${socket.id}`);

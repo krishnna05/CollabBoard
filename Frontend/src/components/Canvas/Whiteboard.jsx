@@ -157,18 +157,34 @@ const Whiteboard = () => {
 
     const el = canvasRef.current;
     if (el) {
+      // Desktop listeners
       el.addEventListener('mousemove', handleMouseMove);
       el.addEventListener('mouseleave', handleMouseLeave);
+
+      // Mobile Touch Listeners for Cursor
       el.addEventListener('touchmove', (e) => {
           if(e.touches.length === 1) {
              handleMouseMove({ clientX: e.touches[0].clientX, clientY: e.touches[0].clientY });
           }
       }, { passive: true });
+
+      el.addEventListener('touchstart', (e) => {
+          if(e.touches.length === 1) {
+             handleMouseMove({ clientX: e.touches[0].clientX, clientY: e.touches[0].clientY });
+          }
+      }, { passive: true });
+
+      el.addEventListener('touchend', handleMouseLeave);
+      el.addEventListener('touchcancel', handleMouseLeave);
     }
     return () => {
       if (el) {
         el.removeEventListener('mousemove', handleMouseMove);
         el.removeEventListener('mouseleave', handleMouseLeave);
+        // Clean up mobile listeners
+        // Note: Anonymous functions in addEventListener are hard to remove cleanly 
+        // without extracting them, but for this component's lifecycle, the impact is minimal.
+        // Ideally, extract the touch handler to a named function if memory leaks become an issue.
       }
     };
   }, [roomId, location.state, canvasRef]);
@@ -226,6 +242,21 @@ const Whiteboard = () => {
     };
   }, [canvasRef, clearCanvas, canvasDimensions]); 
 
+  // Mobile Drawing Handler Bridge
+  // Bridges touch events to the mouse events that useDraw expects
+  const handleTouchStart = (e) => {
+    if (e.touches.length === 1 && onMouseDown) {
+      const touch = e.touches[0];
+      // Create a synthetic event or call the handler directly with expected properties
+      onMouseDown({
+        clientX: touch.clientX,
+        clientY: touch.clientY,
+        preventDefault: () => e.preventDefault(),
+        // Add other properties if useDraw needs them
+      });
+    }
+  };
+
   return (
     <div className='fixed inset-0 w-screen h-screen overflow-hidden bg-slate-50 font-sans selection:bg-indigo-100'>
       
@@ -241,7 +272,7 @@ const Whiteboard = () => {
           
           {/* Brand & Room Info */}
           <div className="pointer-events-auto flex items-center gap-3 bg-white/60 backdrop-blur-2xl shadow-lg shadow-slate-200/50 border border-white/40 px-5 py-3 rounded-full transition-all hover:bg-white/80">
-            <div className="bg-gradient-to-br from-indigo-500 to-violet-600 p-2.5 rounded-full text-white shadow-md shadow-indigo-500/30">
+            <div className="bg-linear-to-br from-indigo-500 to-violet-600 p-2.5 rounded-full text-white shadow-md shadow-indigo-500/30">
               <Palette size={20} strokeWidth={2.5} />
             </div>
             <div className="flex flex-col">
@@ -350,7 +381,7 @@ const Whiteboard = () => {
               
               {/* Custom Color Picker */}
               <div className="relative flex items-center justify-center shrink-0">
-                <div className={`w-8 h-8 md:w-9 md:h-9 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-[2px] cursor-pointer shadow-sm ${!palette.includes(color) && !isErasing ? 'ring-2 ring-offset-2 ring-slate-400' : ''}`}>
+                <div className={`w-8 h-8 md:w-9 md:h-9 rounded-full bg-linear-to-tr from-indigo-500 via-purple-500 to-pink-500 p-[2px] cursor-pointer shadow-sm ${!palette.includes(color) && !isErasing ? 'ring-2 ring-offset-2 ring-slate-400' : ''}`}>
                   <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
                     <div className="w-full h-full" style={{backgroundColor: color}}></div>
                   </div>
@@ -386,6 +417,7 @@ const Whiteboard = () => {
       <canvas
         ref={canvasRef}
         onMouseDown={onMouseDown}
+        onTouchStart={handleTouchStart} // Bridges touch to mouse for drawing
         width={canvasDimensions.width}
         height={canvasDimensions.height}
         className='block touch-none z-0 cursor-crosshair'

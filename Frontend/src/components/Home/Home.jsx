@@ -78,7 +78,7 @@ const Home = () => {
 
                     <h1 className="font-['Manrope',sans-serif] text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight text-slate-900 leading-[1.1]">
                         Ideas flow better <br/>
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 animate-gradient-x">
+                        <span className="text-transparent bg-clip-text bg-linear-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 animate-gradient-x">
                             when shared.
                         </span>
                     </h1>
@@ -106,7 +106,7 @@ const Home = () => {
                 </div>
 
                 <div className="w-full max-w-[360px] lg:ml-auto order-1 lg:order-2 perspective-1000">
-                    <div className="relative bg-white/40 backdrop-blur-2xl border border-white/50 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] rounded-[1.5rem] p-1.5 ring-1 ring-white/60 transition-all duration-500 hover:scale-[1.01] hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.12)]">
+                    <div className="relative bg-white/40 backdrop-blur-2xl border border-white/50 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] rounded-3xl p-1.5 ring-1 ring-white/60 transition-all duration-500 hover:scale-[1.01] hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.12)]">
                         
                         <div className="bg-white/60 rounded-[20px] border border-white/50 p-5 sm:p-6 space-y-5 backdrop-blur-sm">
                             
@@ -135,9 +135,9 @@ const Home = () => {
 
                             {/* SPLITTER */}
                             <div className="relative flex items-center py-1">
-                                <div className="flex-grow border-t border-slate-200/60"></div>
-                                <span className="flex-shrink-0 mx-3 text-[9px] font-bold text-slate-400 uppercase tracking-widest bg-white/0 px-1">Action</span>
-                                <div className="flex-grow border-t border-slate-200/60"></div>
+                                <div className="grow border-t border-slate-200/60"></div>
+                                <span className="shrink-0 mx-3 text-[9px] font-bold text-slate-400 uppercase tracking-widest bg-white/0 px-1">Action</span>
+                                <div className="grow border-t border-slate-200/60"></div>
                             </div>
 
                             <div className="grid gap-3">
@@ -146,7 +146,7 @@ const Home = () => {
                                     onClick={createNewRoom}
                                     disabled={!username}
                                     className="group relative w-full h-10 overflow-hidden rounded-lg font-bold text-xs text-white shadow-md shadow-indigo-500/20 transition-all duration-300 
-                                    bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600
+                                    bg-linear-to-r from-indigo-600 via-purple-600 to-violet-600
                                     hover:shadow-[0_0_15px_rgba(99,102,241,0.5)] hover:-translate-y-0.5 
                                     active:scale-[0.98] active:translate-y-0
                                     disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-y-0 disabled:hover:scale-100"

@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState, useMemo } from 'react';
-import { throttle } from 'lodash';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 export const useDraw = (onDraw, onEmit) => {
   const canvasRef = useRef(null);
@@ -9,15 +8,29 @@ export const useDraw = (onDraw, onEmit) => {
   const [history, setHistory] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
 
-  const throttledEmit = useMemo(
-    () => throttle((data) => {
-        onEmit?.(data);
-    }, 10),
-    [onEmit]
-  );
+  const pendingPoints = useRef([]);
+  const emitTimeoutRef = useRef(null);
+
+  const flushPendingPoints = useCallback(() => {
+    if (pendingPoints.current.length > 0 && onEmit) {
+      pendingPoints.current.forEach(point => {
+        onEmit(point);
+      });
+      pendingPoints.current = [];
+    }
+    emitTimeoutRef.current = null;
+  }, [onEmit]);
+
+  const queueEmit = useCallback((data) => {
+    pendingPoints.current.push(data);
+
+    if (!emitTimeoutRef.current) {
+      emitTimeoutRef.current = setTimeout(flushPendingPoints, 16); 
+    }
+  }, [flushPendingPoints]);
 
   const onMouseDown = (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     isDrawing.current = true;
   };
 
@@ -59,13 +72,21 @@ export const useDraw = (onDraw, onEmit) => {
 
       const drawData = { ctx, currentPoint, prevPoint: prevPoint.current };
       onDraw(drawData);
-      throttledEmit(drawData);
+      queueEmit(drawData);
 
       prevPoint.current = currentPoint;
     };
 
     const mouseUpHandler = () => {
       if (!isDrawing.current) return;
+      if (emitTimeoutRef.current) {
+        clearTimeout(emitTimeoutRef.current);
+        emitTimeoutRef.current = null;
+      }
+      if (pendingPoints.current.length > 0 && onEmit) {
+        pendingPoints.current.forEach(point => onEmit(point));
+        pendingPoints.current = [];
+      }
 
       isDrawing.current = false;
       prevPoint.current = null;
@@ -89,7 +110,7 @@ export const useDraw = (onDraw, onEmit) => {
       }
       window.removeEventListener('mouseup', mouseUpHandler);
     };
-  }, [onDraw, throttledEmit]);
+  }, [onDraw, queueEmit, onEmit]);
 
   const undo = () => {
     if (history.length === 0) return;

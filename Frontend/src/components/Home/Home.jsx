@@ -36,7 +36,7 @@ const Home = () => {
     }
 
     return (
-        <div className="relative min-h-dvh w-full bg-[#FDFDFE] text-slate-900 font-['Inter',sans-serif] flex flex-col selection:bg-indigo-100 selection:text-indigo-700 overflow-x-hidden">
+        <div className="relative h-dvh w-full bg-[#FDFDFE] text-slate-900 font-['Inter',sans-serif] flex flex-col selection:bg-indigo-100 selection:text-indigo-700 overflow-hidden">
             
             {/* Background Decorations */}
             <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
@@ -62,7 +62,7 @@ const Home = () => {
             </div>
 
             {/* Navbar */}
-            <nav className="relative z-10 w-full px-4 sm:px-6 md:px-8 py-3 sm:py-4 flex justify-between items-center shrink-0">
+            <nav className="relative z-10 w-full px-4 sm:px-6 md:px-8 py-2 sm:py-4 flex justify-between items-center shrink-0">
                 <div className="flex items-center gap-2 group cursor-pointer">
                     <div className="bg-white border border-indigo-50 p-1.5 rounded-lg text-indigo-600 shadow-sm shadow-indigo-100/50 group-hover:scale-105 transition-all duration-300">
                         <LayoutTemplate className="w-4 h-4" strokeWidth={2.5} />
@@ -74,12 +74,12 @@ const Home = () => {
             </nav>
 
             {/* Main Content */}
-            <main className="relative z-10 flex-1 w-full max-w-[1080px] mx-auto px-3 sm:px-6 md:px-8 py-6 lg:py-0 pb-12 flex flex-col lg:grid lg:grid-cols-12 gap-8 lg:gap-16 items-start lg:items-center justify-start lg:justify-center h-auto min-h-[calc(100vh-80px)]">
+            <main className="relative z-10 flex-1 w-full max-w-[1080px] mx-auto px-3 sm:px-6 md:px-8 py-2 sm:py-0 pb-4 sm:pb-12 flex flex-col lg:grid lg:grid-cols-12 gap-4 sm:gap-8 lg:gap-16 items-center justify-center h-full sm:h-auto min-h-0 sm:min-h-[calc(100vh-80px)]">
 
                 {/* Left Side: Text Content */}
-                <div className="w-full lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6 mt-4 lg:mt-0">
+                <div className="w-full lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-3 sm:space-y-6 mt-0">
                     
-                    <div className="space-y-4">
+                    <div className="space-y-2 sm:space-y-4">
                         <h1 className="font-['Manrope',sans-serif] text-3xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight text-slate-900 leading-[1.1]">
                             Ideas flow better <br className="hidden sm:block"/>
                             <span className="relative inline-block sm:mt-2">
@@ -111,6 +111,8 @@ const Home = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* Right Side: Action Card */}
                 <div className="w-full lg:col-span-5 max-w-[380px] mx-auto lg:mr-0">
                     <div className="relative group perspective-1000">
                         

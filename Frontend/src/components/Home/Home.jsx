@@ -4,13 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { 
     LayoutTemplate, 
     ArrowRight, 
-    Sparkles, 
     Plus, 
     Users, 
-    Keyboard,
-    Command,
     Zap,
-    Menu
+    Globe,
+    ShieldCheck
 } from 'lucide-react';
 
 const Home = () => {
@@ -38,152 +36,174 @@ const Home = () => {
     }
 
     return (
-        <div className="relative min-h-screen w-full bg-[#FDFDFE] text-slate-900 font-['Inter',sans-serif] flex flex-col selection:bg-indigo-100 selection:text-indigo-700 overflow-x-hidden">
+        <div className="relative min-h-dvh w-full bg-[#FDFDFE] text-slate-900 font-['Inter',sans-serif] flex flex-col selection:bg-indigo-100 selection:text-indigo-700 overflow-x-hidden">
             
-            <div className="fixed inset-0 z-0 overflow-hidden">
-                <div className="absolute inset-0 opacity-40" 
+            {/* Background Decorations */}
+            <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+                {/* Dot Pattern */}
+                <div className="absolute inset-0 opacity-[0.4]" 
                     style={{
                         backgroundImage: 'radial-gradient(#cbd5e1 1px, transparent 1px)',
-                        backgroundSize: '20px 20px'
+                        backgroundSize: '24px 24px'
                     }}>
                 </div>
-                <div className="absolute top-[-5%] left-[-5%] w-[40vw] h-[40vh] bg-indigo-300/20 rounded-full blur-[80px] pointer-events-none mix-blend-multiply animate-pulse" style={{animationDuration: '4s'}} />
-                <div className="absolute bottom-[-5%] right-[-5%] w-[40vw] h-[40vh] bg-purple-300/20 rounded-full blur-[80px] pointer-events-none mix-blend-multiply animate-pulse" style={{animationDuration: '7s'}} />
-            </div>
-            <nav className="relative z-10 w-full px-5 md:px-8 py-4 flex justify-between items-center shrink-0">
-                <div className="flex items-center gap-2.5 group cursor-pointer">
-                    <div className="bg-white border border-indigo-100 p-2 rounded-lg text-indigo-600 shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all duration-300">
-                        <LayoutTemplate size={18} />
-                    </div>
-                    <span className="text-lg font-['Manrope',sans-serif] font-bold tracking-tight text-slate-900">
-                        CollabBoard
-                    </span>
-                </div>
                 
-                {/* Systems Online Badge - Scaled down */}
-                <div className="hidden md:flex items-center gap-3">
-                    <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/50 border border-white/60 backdrop-blur-md shadow-sm transition-all hover:bg-white/80">
-                        <span className="relative flex h-2 w-2">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]"></span>
-                        </span>
-                        <span className="text-[10px] font-bold text-slate-600 tracking-wide uppercase">Systems Online</span>
+                {/* Ambient Gradients */}
+                <div className="absolute top-[-10%] left-[-20%] w-[70vw] h-[45vh] bg-indigo-500/5 rounded-full blur-[90px] mix-blend-multiply" />
+                <div className="absolute bottom-[-10%] right-[-20%] w-[70vw] h-[45vh] bg-purple-500/5 rounded-full blur-[90px] mix-blend-multiply" />
+                
+                {/* Hero Visual */}
+                <svg className="hidden sm:block absolute top-[10%] left-[5%] w-56 h-56 md:w-80 md:h-80 opacity-[0.03] text-indigo-600" viewBox="0 0 200 200">
+                    <path fill="currentColor" d="M45.7,18.4c-6.8-2.6-13.3,2.9-12,9.9c2.5,13.6,17.4,19.3,29.3,12.7c3.9-2.2,6.5-6.3,6.5-10.9 C69.5,22.7,58.1,13.8,45.7,18.4z"/>
+                    <path fill="currentColor" d="M158.3,42.1c-9.2-4-18.7,3.1-17.6,13.1c1.9,16.8,22.1,24.8,37.6,16.8c5.4-2.8,9.1-8.2,9.3-14.3 C188.3,48.1,173.8,35.6,158.3,42.1z"/>
+                    <path fill="none" stroke="currentColor" strokeWidth="1" d="M57,25 C100,50 120,40 150,55" />
+                    <circle cx="100" cy="45" r="3" fill="currentColor" />
+                </svg>
+            </div>
+
+            {/* Navbar */}
+            <nav className="relative z-10 w-full px-4 sm:px-6 md:px-8 py-3 sm:py-4 flex justify-between items-center shrink-0">
+                <div className="flex items-center gap-2 group cursor-pointer">
+                    <div className="bg-white border border-indigo-50 p-1.5 rounded-lg text-indigo-600 shadow-sm shadow-indigo-100/50 group-hover:scale-105 transition-all duration-300">
+                        <LayoutTemplate className="w-4 h-4" strokeWidth={2.5} />
+                    </div>
+                    <span className="text-base font-['Manrope',sans-serif] font-bold tracking-tight text-slate-900">
+                        CollabBoard
                     </span>
                 </div>
             </nav>
 
-            <main className="relative z-10 flex-1 w-full max-w-[1100px] mx-auto px-5 md:px-8 py-6 lg:py-0 grid lg:grid-cols-2 gap-8 lg:gap-4 items-center justify-items-center lg:justify-items-stretch">
+            {/* Main Content */}
+            <main className="relative z-10 flex-1 w-full max-w-[1080px] mx-auto px-3 sm:px-6 md:px-8 py-6 lg:py-0 pb-12 flex flex-col lg:grid lg:grid-cols-12 gap-8 lg:gap-16 items-start lg:items-center justify-start lg:justify-center h-auto min-h-[calc(100vh-80px)]">
 
-                <div className="flex flex-col items-center lg:items-start text-center lg:text-left space-y-6 max-w-xl order-2 lg:order-1">
-
-                    <h1 className="font-['Manrope',sans-serif] text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight text-slate-900 leading-[1.1]">
-                        Ideas flow better <br/>
-                        <span className="text-transparent bg-clip-text bg-linear-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 animate-gradient-x">
-                            when shared.
-                        </span>
-                    </h1>
+                {/* Left Side: Text Content */}
+                <div className="w-full lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6 mt-4 lg:mt-0">
                     
-                    <p className="text-sm sm:text-base text-slate-500 max-w-md leading-relaxed font-medium">
-                        The infinite canvas for modern teams. No sign-up needed. <br className="hidden lg:block" />
-                        Just create a room and start collaborating instantly.
-                    </p>
+                    <div className="space-y-4">
+                        <h1 className="font-['Manrope',sans-serif] text-3xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight text-slate-900 leading-[1.1]">
+                            Ideas flow better <br className="hidden sm:block"/>
+                            <span className="relative inline-block sm:mt-2">
+                                <span className="absolute -inset-1 bg-indigo-100/50 blur-xl rounded-full"></span>
+                                <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 animate-gradient-x">
+                                    on a shared canvas.
+                                </span>
+                            </span>
+                        </h1>
+                        
+                        <p className="text-sm sm:text-base text-slate-500 max-w-sm sm:max-w-md leading-relaxed font-medium mx-auto lg:mx-0">
+                            The infinite whiteboard for modern teams. Sketch, plan, and collaborate in real-time. No sign-up needed.
+                        </p>
+                    </div>
 
-                    {/* Features - Compact list */}
-                    <div className="pt-1 flex flex-wrap gap-4 text-xs font-semibold text-slate-500 justify-center lg:justify-start">
-                        <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-white/50 transition-colors cursor-default">
-                            <div className="p-0.5 rounded bg-amber-100 text-amber-600">
-                                <Zap size={12} fill="currentColor" />
-                            </div>
-                            Real-time Sync
+                    {/* Feature Pills */}
+                    <div className="flex flex-wrap gap-2 justify-center lg:justify-start w-full">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-100 text-slate-600 shadow-sm text-[10px] font-bold uppercase tracking-wide">
+                            <Zap size={10} className="fill-indigo-500 text-indigo-500" />
+                            Real-time
                         </div>
-                        <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-white/50 transition-colors cursor-default">
-                            <div className="p-0.5 rounded bg-indigo-100 text-indigo-600">
-                                <Users size={12} fill="currentColor" />
-                            </div>
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-100 text-slate-600 shadow-sm text-[10px] font-bold uppercase tracking-wide">
+                            <Users size={10} className="fill-purple-500 text-purple-500" />
                             Multi-user
+                        </div>
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-100 text-slate-600 shadow-sm text-[10px] font-bold uppercase tracking-wide">
+                            <Globe size={10} className="text-emerald-500" />
+                            Free
                         </div>
                     </div>
                 </div>
-
-                <div className="w-full max-w-[360px] lg:ml-auto order-1 lg:order-2 perspective-1000">
-                    <div className="relative bg-white/40 backdrop-blur-2xl border border-white/50 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] rounded-3xl p-1.5 ring-1 ring-white/60 transition-all duration-500 hover:scale-[1.01] hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.12)]">
+                <div className="w-full lg:col-span-5 max-w-[380px] mx-auto lg:mr-0">
+                    <div className="relative group perspective-1000">
                         
-                        <div className="bg-white/60 rounded-[20px] border border-white/50 p-5 sm:p-6 space-y-5 backdrop-blur-sm">
+                        {/* Decorative Back Glow */}
+                        <div className="hidden lg:block absolute -inset-1 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 rounded-[24px] blur-xl opacity-0 group-hover:opacity-100 transition duration-700"></div>
+                        
+                        {/* Main Container */}
+                        <div className="relative overflow-hidden transition-all duration-300 
+                            bg-transparent p-0 border-none shadow-none
+                            lg:bg-white/80 lg:backdrop-blur-2xl lg:border lg:border-white/40 lg:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] lg:rounded-[24px] lg:p-6 lg:hover:shadow-[0_25px_60px_-12px_rgba(0,0,0,0.12)]">
                             
-                            {/* USERNAME FIELD */}
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1 flex items-center gap-1.5">
-                                    <span className="w-4 h-4 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-[9px]">1</span>
-                                    Identify Yourself
-                                </label>
+                            {/* Gradient Sheen Overlay */}
+                            <div className="hidden lg:block absolute inset-0 bg-gradient-to-b from-white/50 to-transparent pointer-events-none"></div>
+
+                            <div className="relative space-y-5">
                                 
-                                <div className={`group relative flex items-center transition-all duration-300 rounded-lg border ${isInputFocused ? 'border-indigo-400 bg-white shadow-[0_0_0_3px_rgba(99,102,241,0.15)]' : 'border-transparent bg-slate-50/80 hover:bg-white hover:border-slate-200 hover:shadow-sm'}`}>
-                                    <div className="pl-3 text-slate-400 group-focus-within:text-indigo-500 transition-colors">
-                                        <Users size={16} className="transition-transform duration-300 group-hover:scale-110" />
+                                {/* Identity Input */}
+                                <div className="space-y-1.5">
+                                    <div className="flex items-center justify-between mb-1 ml-1">
+                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                            Identify Yourself
+                                        </span>
                                     </div>
-                                    <input
-                                        type="text"
-                                        placeholder="Enter your name..."
-                                        value={username}
-                                        onChange={(e) => setUsername(e.target.value)}
-                                        onFocus={() => setIsInputFocused(true)}
-                                        onBlur={() => setIsInputFocused(false)}
-                                        className="w-full h-10 bg-transparent border-none outline-none px-3 text-sm font-semibold text-slate-700 placeholder:text-slate-400/80"
-                                    />
+                                    <div className={`relative flex items-center transition-all duration-200 bg-white border rounded-xl overflow-hidden shadow-sm ${isInputFocused ? 'border-indigo-500 ring-2 ring-indigo-500/10' : 'border-slate-200 hover:border-slate-300'}`}>
+                                        <div className="pl-3.5 text-slate-400">
+                                            <Users size={16} />
+                                        </div>
+                                        <input
+                                            type="text"
+                                            placeholder="Enter your name"
+                                            value={username}
+                                            onChange={(e) => setUsername(e.target.value)}
+                                            onFocus={() => setIsInputFocused(true)}
+                                            onBlur={() => setIsInputFocused(false)}
+                                            className="w-full h-11 bg-transparent border-none outline-none px-3 text-sm font-medium text-slate-700 placeholder:text-slate-400"
+                                        />
+                                    </div>
                                 </div>
-                            </div>
 
-                            {/* SPLITTER */}
-                            <div className="relative flex items-center py-1">
-                                <div className="grow border-t border-slate-200/60"></div>
-                                <span className="shrink-0 mx-3 text-[9px] font-bold text-slate-400 uppercase tracking-widest bg-white/0 px-1">Action</span>
-                                <div className="grow border-t border-slate-200/60"></div>
-                            </div>
+                                {/* Actions */}
+                                <div className="space-y-3 pt-1">
+                                    <button
+                                        onClick={createNewRoom}
+                                        disabled={!username}
+                                        className="w-full h-11 relative overflow-hidden rounded-xl font-bold text-sm text-white shadow-lg shadow-indigo-500/20 transition-all duration-300 
+                                        bg-gradient-to-r from-indigo-600 to-violet-600
+                                        hover:shadow-indigo-500/40 hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0
+                                        disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-y-0"
+                                    >
+                                        <span className="relative z-10 flex items-center justify-center gap-2">
+                                            <Plus size={16} strokeWidth={3} />
+                                            Create New Board
+                                        </span>
+                                    </button>
 
-                            <div className="grid gap-3">
-                                {/* Create Button */}
-                                <button
-                                    onClick={createNewRoom}
-                                    disabled={!username}
-                                    className="group relative w-full h-10 overflow-hidden rounded-lg font-bold text-xs text-white shadow-md shadow-indigo-500/20 transition-all duration-300 
-                                    bg-linear-to-r from-indigo-600 via-purple-600 to-violet-600
-                                    hover:shadow-[0_0_15px_rgba(99,102,241,0.5)] hover:-translate-y-0.5 
-                                    active:scale-[0.98] active:translate-y-0
-                                    disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-y-0 disabled:hover:scale-100"
-                                >
-                                    <div className="relative flex items-center justify-center gap-1.5">
-                                        <div className="bg-white/20 p-0.5 rounded backdrop-blur-sm transition-transform duration-300 group-hover:rotate-90">
-                                            <Plus size={14} strokeWidth={3} />
-                                        </div>
-                                        <span>Create New Board</span>
+                                    <div className="relative flex items-center py-1">
+                                        <div className="grow border-t border-slate-200/60 lg:border-slate-100"></div>
+                                        <span className="shrink-0 mx-3 text-[9px] font-bold text-slate-400 lg:text-slate-300 uppercase tracking-widest">or join</span>
+                                        <div className="grow border-t border-slate-200/60 lg:border-slate-100"></div>
                                     </div>
-                                </button>
 
-                                {/* Join Input Group */}
-                                <div className="flex gap-2 h-10">
-                                    <div className="relative flex-1 h-full group">
-                                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">
-                                            <Keyboard size={16} className="transition-transform duration-300 group-hover:scale-110"/>
-                                        </div>
+                                    <div className="flex gap-2">
                                         <input
                                             type="text"
                                             placeholder="Paste Room ID"
                                             value={roomId}
                                             onChange={(e) => setRoomId(e.target.value)}
                                             onKeyDown={handleInputEnter}
-                                            className="w-full h-full pl-9 pr-3 bg-slate-50/80 border border-transparent hover:border-slate-200 focus:bg-white focus:border-indigo-300 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)] rounded-lg text-xs font-['JetBrains_Mono',monospace] font-medium focus:outline-none transition-all placeholder:text-slate-400/80 placeholder:font-sans"
+                                            className="flex-1 h-10 px-3 bg-white border border-slate-200 rounded-lg text-xs font-['JetBrains_Mono',monospace] font-medium focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition-all placeholder:text-slate-400 shadow-sm"
                                         />
+                                        <button
+                                            onClick={joinRoom}
+                                            disabled={!roomId || !username}
+                                            className="h-10 px-3 bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-200 rounded-lg transition-all duration-200 flex items-center justify-center shadow-sm active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            <ArrowRight size={16} />
+                                        </button>
                                     </div>
-                                    <button
-                                        onClick={joinRoom}
-                                        disabled={!roomId || !username}
-                                        className="aspect-square h-full bg-white border border-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 disabled:bg-slate-50 disabled:text-slate-300 disabled:border-transparent rounded-lg transition-all duration-200 flex items-center justify-center shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95"
-                                    >
-                                        <ArrowRight size={16} />
-                                    </button>
                                 </div>
-                            </div>
 
+                                {/* Footer Badges */}
+                                <div className="hidden lg:flex pt-2 justify-center gap-4 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+                                    <div className="flex items-center gap-1 text-[9px] font-medium text-slate-500">
+                                        <ShieldCheck size={10} className="text-emerald-500" />
+                                        <span>Secure</span>
+                                    </div>
+                                    <div className="flex items-center gap-1 text-[9px] font-medium text-slate-500">
+                                        <Zap size={10} className="text-amber-500" />
+                                        <span>Fast</span>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </div>
